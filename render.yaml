@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: slot-machine-game
+    env: go
+    plan: free
+    buildCommand: go build -o main .
+    startCommand: ./main
+    envVars:
+      - key: GO_VERSION
+        value: 1.16
