@@ -1,30 +1,29 @@
 package main
 
 import (
-
-
-	"github.com/gofiber/fiber/v2"
+    "encoding/json"
+    "net/http"
 )
 
-
-func PlayHandler(c *fiber.Ctx) error {
-
-	request := new(PlayRequest)
-	if err := c.BodyParser(request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid request payload. Please provide a valid bet amount.",
-		})
-	}
-
-	if request.BetAmount <= 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bet amount must be greater than zero.",
-		})
-	}
+func handleSpin(w http.ResponseWriter, r *http.Request) {
 
 	
-	outcome := simulateGame(request.BetAmount)
+    if r.Method != http.MethodPost {
+        http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+        return
+    }
 
-	
-	return c.JSON(outcome)
+    var requestData struct {
+        BetAmount float64 `json:"betAmount"`
+    }
+
+    if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
+        http.Error(w, "Invalid request ", http.StatusBadRequest)
+        return
+    }
+
+    result := spin(requestData.BetAmount)
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(result)
 }
