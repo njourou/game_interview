@@ -1,17 +1,20 @@
 package main
 
 import (
-    "log"
-    "net/http"
-    "time"
-    "math/rand"
+	"log"
+	"math/rand"
+	"net/http"
+	"time"
 )
 
 func main() {
-    rand.Seed(time.Now().UnixNano())
-//start the server
-    http.HandleFunc("/spin", handleSpin)
-    log.Println("Starting slot machine server on :8080")
-	
-    log.Fatal(http.ListenAndServe(":8080", nil))
+	//seed the random number generator
+
+	rand.Seed(time.Now().UnixNano())
+	//start the server
+	http.HandleFunc("/spin", handleSpin)
+
+	log.Println("starting the prrogram on :8080")
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
